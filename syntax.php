@@ -77,12 +77,18 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
       $renderer->doc .= '<table class="editor">';
       foreach ($pages as $page){
         $renderer->doc .= '<tr><td class="page">';
+        
+        // page
         $id  = $page['id'];
         $title = p_get_first_heading($id);
         $renderer->doc .= $renderer->internallink(':'.$id, $title).'</td>';
+        
+        // date
         if ($this->getConf('showdate')){
           $renderer->doc .= '<td class="date">'.date($conf['dformat'],$page['date']).'</td>';
         }
+        
+        // user
         if (($user == '@ALL') && $page['user'] && $this->getConf('showuser') && !is_null($auth)){
           $userInfo = $auth->getUserData($page['user']);
           $renderer->doc .= '<td class="user">'.$userInfo['name'].'</td>';
