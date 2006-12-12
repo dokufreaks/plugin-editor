@@ -13,7 +13,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2006-12-10',
+      'date'   => '2006-12-12',
       'name'   => 'Editor Plugin (helper class)',
       'desc'   => 'Returns pages recently edited by a given user',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -47,21 +47,39 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     
     if ((!$num) || (!is_numeric($num))) $num = $conf['recent'];
     
-    $result = array();
-    $count  = 0;
+    if ($user == '@ALL'){                                                 // all users
+      $type = 'all';
+    } elseif ($user{0} == '@'){                                           // filter group
+      global $auth;
+      
+      if (($auth) && ($auth->cando['getUsers'])){
+        $user = $auth->retrieveUsers(0, 0, array('grps' => substr($user, 1)));
+        $user = array_keys($user);
+        $type = 'group';
+      } else {
+        msg('Group filtering not supported by authentification class.', -1);
+        return array();
+      }
+    } elseif (preg_match("/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/", $user)){ // filter IP
+      $type = 'ip';
+    } else {                                                              // filter user
+      $type = 'user';
+    }
       
     // read all recent changes. (kept short)
     $lines = file($conf['changelog']);
   
     // handle lines
+    $result = array();
+    $count  = 0;
     for ($i = count($lines)-1; $i >= 0; $i--){
-      $rec = $this->_handleRecent($lines[$i], $ns, $user);
-      if($rec !== false) {
-        if(--$first >= 0) continue; // skip first entries
+      $rec = $this->_handleRecent($lines[$i], $ns, $type, $user);
+      if ($rec !== false){
+        if (--$first >= 0) continue; // skip first entries
         $result[] = $rec;
         $count++;
         // break when we have enough entries
-        if($count >= $num){ break; }
+        if ($count >= $num) break;
       }
     }
               
@@ -80,24 +98,26 @@ class helper_plugin_editor extends DokuWiki_Plugin {
    * @author Ben Coburn <btcoburn@silicodon.net>
    * @author Esther Brunner <wikidesign@gmail.com>
    */
-  function _handleRecent($line, $ns, $user){
+  function _handleRecent($line, $ns, $type, $user){
     static $seen  = array();         //caches seen pages and skip them
     if(empty($line)) return false;   //skip empty lines
-    
-    if (preg_match("/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/", $user)) $type = 'ip';
-    else $type = 'user';
   
     // split the line into parts
     $recent = parseChangelogLine($line);
-    if ($recent===false) { return false; }
+    if ($recent === false) return false;
   
     // skip seen ones
     if(isset($seen[$recent['id']])) return false;
     
     // entry clauses for user and ip filtering
     switch ($type){
+    case 'all':
+      break;
     case 'user':
-      if (($recent['user'] != $user) && ($user != '@ALL')) return false;
+      if ($recent['user'] != $user) return false;
+      break;
+    case 'group':
+      if (!in_array($recent['user'], $user)) return false;
       break;
     case 'ip':
       if ($recent['ip'] != $user) return false;

@@ -77,8 +77,8 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
         return false;
       }
       
-      // hide user column (same for all entries)
-      if ($user != '@ALL') $pagelist->column['user'] = false;
+      // hide user column, unless for groups
+      if ($user{0} != '@') $pagelist->column['user'] = false;
             
       $pagelist->startList();
       foreach ($pages as $page){        
