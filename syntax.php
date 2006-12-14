@@ -63,7 +63,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     if (($ns == '*') || ($ns == ':')) $ns = '';
     elseif ($ns == '.') $ns = getNS($ID);
     
-    if ($my =& plugin_load('helper', 'editor')) $pages = $my->getPages($ns, '', $user);
+    if ($my =& plugin_load('helper', 'editor')) $pages = $my->getEditor($ns, '', $user);
     if (!$pages) return true; // nothing to display
     
     if ($mode == 'xhtml'){
