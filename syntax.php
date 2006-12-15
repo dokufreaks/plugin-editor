@@ -72,7 +72,8 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
       $renderer->info['cache'] = false;
       
       // let Pagelist Plugin do the work for us
-      if (!$pagelist =& plugin_load('helper', 'pagelist')){
+      if (plugin_isdisabled('include')
+        || (!$pagelist =& plugin_load('helper', 'pagelist'))){
         msg('The Pagelist Plugin must be installed for editor lists to work.', -1);
         return false;
       }
