@@ -17,14 +17,11 @@ require_once(DOKU_PLUGIN.'syntax.php');
 
 class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
 
-  /**
-   * return some info
-   */
   function getInfo(){
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2006-12-14',
+      'date'   => '2007-01-11',
       'name'   => 'Editor Plugin',
       'desc'   => 'Displays a list of recently changed wiki pages by a given author',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -39,30 +36,27 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     $this->Lexer->addSpecialPattern('\{\{editor>.+?\}\}',$mode,'plugin_editor');
   }
 
-  /**
-   * Handle the match
-   */
   function handle($match, $state, $pos, &$handler){
+    global $ID;
+    
     $match = substr($match, 9, -2); // strip {{editor> from start and }} from end
     list($ns, $user) = explode('?', $match);
+    
     if (!$user){
       $user = $ns;
       $ns   = '';
     }
-    return array(cleanID($ns), trim($user));
-  }
-
-  /**
-   * Create output
-   */
-  function render($mode, &$renderer, $data) {
-    global $ID;
-    
-    list($ns, $user) = $data;
     
     if (($ns == '*') || ($ns == ':')) $ns = '';
     elseif ($ns == '.') $ns = getNS($ID);
+    else $ns = cleanID($ns);
     
+    return array($ns, trim($user));
+  }
+
+  function render($mode, &$renderer, $data) {
+    list($ns, $user) = $data;
+        
     if ($my =& plugin_load('helper', 'editor')) $pages = $my->getEditor($ns, '', $user);
     if (!$pages) return true; // nothing to display
     
