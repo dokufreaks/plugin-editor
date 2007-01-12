@@ -21,7 +21,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-11',
+      'date'   => '2007-01-12',
       'name'   => 'Editor Plugin',
       'desc'   => 'Displays a list of recently changed wiki pages by a given author',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -40,6 +40,8 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     global $ID;
     
     $match = substr($match, 9, -2); // strip {{editor> from start and }} from end
+    list($match, $flags) = explode('&', $match, 2);
+    $flags = explode('&', $flags);
     list($ns, $user) = explode('?', $match);
     
     if (!$user){
@@ -51,11 +53,11 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     elseif ($ns == '.') $ns = getNS($ID);
     else $ns = cleanID($ns);
     
-    return array($ns, trim($user));
+    return array($ns, trim($user), $flags);
   }
 
   function render($mode, &$renderer, $data) {
-    list($ns, $user) = $data;
+    list($ns, $user, $flags) = $data;
         
     if ($my =& plugin_load('helper', 'editor')) $pages = $my->getEditor($ns, '', $user);
     if (!$pages) return true; // nothing to display
@@ -74,7 +76,8 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
       
       // hide user column, unless for groups
       if ($user{0} != '@') $pagelist->column['user'] = false;
-            
+      
+      $pagelist->setFlags($flags);
       $pagelist->startList();
       foreach ($pages as $page){        
         $pagelist->addPage($page);
