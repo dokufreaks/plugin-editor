@@ -13,7 +13,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2006-12-12',
+      'date'   => '2007-01-14',
       'name'   => 'Editor Plugin (helper class)',
       'desc'   => 'Returns pages recently edited by a given user',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -24,7 +24,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     $result = array();
     $result[] = array(
       'name'   => 'getEditor',
-      'desc'   => 'returns  pages recently edited by a given user',
+      'desc'   => 'returns pages recently edited by a given user',
       'params' => array(
         'namespace (optional)' => 'string',
         'number (optional)' => 'integer',
@@ -82,6 +82,9 @@ class helper_plugin_editor extends DokuWiki_Plugin {
         if ($count >= $num) break;
       }
     }
+    
+    // clear static $seen in _handleRecent
+    $this->_handleRecent(array(), '', 'clear', '');
               
     return $result;
   }
@@ -99,8 +102,9 @@ class helper_plugin_editor extends DokuWiki_Plugin {
    * @author Esther Brunner <wikidesign@gmail.com>
    */
   function _handleRecent($line, $ns, $type, $user){
-    static $seen  = array();         //caches seen pages and skip them
-    if(empty($line)) return false;   //skip empty lines
+    static $seen = array();                // caches seen pages and skip them
+    if ($type == 'clear') $seen = array(); // clear seen pages cache
+    if (empty($line)) return false;        // skip empty lines
   
     // split the line into parts
     $recent = parseChangelogLine($line);
