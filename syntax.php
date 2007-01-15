@@ -58,6 +58,8 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
 
   function render($mode, &$renderer, $data) {
     list($ns, $user, $flags) = $data;
+    
+    if ($user == '@USER@') $user = $_SERVER['REMOTE_USER'];
         
     if ($my =& plugin_load('helper', 'editor')) $pages = $my->getEditor($ns, '', $user);
     if (!$pages) return true; // nothing to display
