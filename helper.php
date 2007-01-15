@@ -135,7 +135,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     $seen[$recent['id']] = 1;
   
     // check if it's a hidden page
-    if(isHiddenPage($recent['id'])) return false;
+    if (isHiddenPage($recent['id'])) return false;
   
     // filter namespace
     if (($ns) && (strpos($recent['id'], $ns.':') !== 0)) return false;
@@ -145,8 +145,9 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     if ($recent['perm'] < AUTH_READ) return false;
   
     // check existance
-    $recent['file'] = wikiFN($recent['id']);
+    $recent['file']   = wikiFN($recent['id']);
     $recent['exists'] = @file_exists($recent['file']);
+    $recent['desc']   = $recent['sum'];
     if (!$recent['exists']) return false;
   
     return $recent;
