@@ -13,7 +13,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-14',
+      'date'   => '2007-01-15',
       'name'   => 'Editor Plugin (helper class)',
       'desc'   => 'Returns pages recently edited by a given user',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',

@@ -21,7 +21,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-12',
+      'date'   => '2007-01-15',
       'name'   => 'Editor Plugin',
       'desc'   => 'Displays a list of recently changed wiki pages by a given author',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
