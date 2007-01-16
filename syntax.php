@@ -21,7 +21,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-15',
+      'date'   => '2007-01-16',
       'name'   => 'Editor Plugin',
       'desc'   => 'Displays a list of recently changed wiki pages by a given author',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -42,6 +42,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     $match = substr($match, 9, -2); // strip {{editor> from start and }} from end
     list($match, $flags) = explode('&', $match, 2);
     $flags = explode('&', $flags);
+    list($match, $refine) = explode(' ', $match, 2);
     list($ns, $user) = explode('?', $match);
     
     if (!$user){
@@ -53,15 +54,25 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
     elseif ($ns == '.') $ns = getNS($ID);
     else $ns = cleanID($ns);
     
-    return array($ns, trim($user), $flags);
+    return array($ns, trim($user), $flags, $refine);
   }
 
   function render($mode, &$renderer, $data) {
-    list($ns, $user, $flags) = $data;
+    list($ns, $user, $flags, $refine) = $data;
     
     if ($user == '@USER@') $user = $_SERVER['REMOTE_USER'];
         
     if ($my =& plugin_load('helper', 'editor')) $pages = $my->getEditor($ns, '', $user);
+    
+    // use tag refinements?
+    if ($refine){
+      if (plugin_isdisabled('tag') || (!$tag = plugin_load('helper', 'tag'))){
+        msg('The Tag Plugin must be installed to use tag refinements.', -1);
+      } else {
+        $pages = $tag->tagRefine($pages, $refine);
+      }
+    }
+    
     if (!$pages) return true; // nothing to display
     
     if ($mode == 'xhtml'){
