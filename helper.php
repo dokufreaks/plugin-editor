@@ -13,7 +13,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     return array(
       'author' => 'Esther Brunner',
       'email'  => 'wikidesign@gmail.com',
-      'date'   => '2007-01-15',
+      'date'   => '2007-01-16',
       'name'   => 'Editor Plugin (helper class)',
       'desc'   => 'Returns pages recently edited by a given user',
       'url'    => 'http://www.wikidesign.ch/en/plugin/editor/start',
@@ -102,7 +102,9 @@ class helper_plugin_editor extends DokuWiki_Plugin {
    * @author Esther Brunner <wikidesign@gmail.com>
    */
   function _handleRecent($line, $ns, $type, $user){
+    global $auth;                          // authentification class
     static $seen = array();                // caches seen pages and skip them
+    
     if ($type == 'clear') $seen = array(); // clear seen pages cache
     if (empty($line)) return false;        // skip empty lines
   
@@ -147,9 +149,16 @@ class helper_plugin_editor extends DokuWiki_Plugin {
     // check existance
     $recent['file']   = wikiFN($recent['id']);
     $recent['exists'] = @file_exists($recent['file']);
-    $recent['desc']   = $recent['sum'];
     if (!$recent['exists']) return false;
-  
+    
+    $recent['desc']   = $recent['sum'];
+    if ($recent['user']){
+      $userinfo = $auth->getUserData($recent['user']);
+      if ($userinfo) $recent['user'] = $userinfo['name'];
+    } else {
+      $recent['user'] = $recent['ip'];
+    }
+    
     return $recent;
   }
     
