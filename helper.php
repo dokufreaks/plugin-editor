@@ -162,4 +162,4 @@ class helper_plugin_editor extends DokuWiki_Plugin {
         return $recent;
     }
 }
-//vim:ts=4:sw=4:et:enc=utf-8:
+// vim:ts=4:sw=4:et:enc=utf-8:
