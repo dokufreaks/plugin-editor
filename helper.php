@@ -52,7 +52,7 @@ class helper_plugin_editor extends DokuWiki_Plugin {
         } elseif ($user{0} == '@') {                                           // filter group
             global $auth;
 
-            if (($auth) && ($auth->cando['getUsers'])) {
+            if (($auth) && ($auth->canDo('getUsers'))) {
                 $user = $auth->retrieveUsers(0, 0, array('grps' => substr($user, 1)));
                 $user = array_keys($user);
                 $type = 'group';
