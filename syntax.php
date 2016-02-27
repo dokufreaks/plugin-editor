@@ -36,7 +36,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
 		$this->Lexer->addSpecialPattern('\{\{editor>.+?\}\}',$mode,'plugin_editor');
 	}
 
-	function handle($match, $state, $pos, &$handler) {
+	function handle($match, $state, $pos, Doku_Handler $handler) {
 		global $ID;
 
 		$match = substr($match, 9, -2); // strip {{editor> from start and }} from end
@@ -57,7 +57,7 @@ class syntax_plugin_editor extends DokuWiki_Syntax_Plugin {
 		return array($ns, trim($user), $flags, $refine);
 	}
 
-	function render($mode, &$renderer, $data) {
+	function render($mode, Doku_Renderer $renderer, $data) {
 		list($ns, $user, $flags, $refine) = $data;
 
 		if ($user == '@USER@') $user = $_SERVER['REMOTE_USER'];
