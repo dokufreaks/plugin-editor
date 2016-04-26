@@ -9,17 +9,6 @@ if (!defined('DOKU_INC')) die();
 
 class helper_plugin_editor extends DokuWiki_Plugin {
 
-    function getInfo() {
-        return array(
-                'author' => 'Gina Häußge, Michael Klier, Esther Brunner',
-                'email'  => 'dokuwiki@chimeric.de',
-                'date'   => '2008-02-13',
-                'name'   => 'Editor Plugin (helper class)',
-                'desc'   => 'Returns pages recently edited by a given user',
-                'url'    => 'http://wiki.splitbrain.org/plugin:editor',
-                );
-    }
-
     function getMethods() {
         $result = array();
         $result[] = array(
