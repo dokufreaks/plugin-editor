@@ -1,7 +1,7 @@
-base   comment
+base   editor
 author Gina Häußge, Michael Klier, Esther Brunner
 email  dokuwiki@chimeric.de
 date   2016-04-26
 name   Editor Plugin
 desc   Displays a list of recently changed wiki pages by a given author
-url    http://dokuwiki.org/plugin:include
+url    http://dokuwiki.org/plugin:editor
